@@ -45,7 +45,6 @@ class UserController extends Controller {
         $user = User::create($request->all());
         return $this->successResponse($user, Response::HTTP_CREATED);
     }
-
     public function update(Request $request, $id)
     {
         $rules = [

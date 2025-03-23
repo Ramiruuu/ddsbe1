@@ -2,7 +2,7 @@
 $servername = "localhost";  // Change if needed
 $username = "root";  // Your MySQL username
 $password = "";  // Your MySQL password (empty if default)
-$dbname = "sia1";  // Your database name
+$dbname = "oclaritdb";  // Your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 }
 
 // Query to get users
-$sql = "SELECT * FROM tbl_user";
+$sql = "SELECT * FROM users";
 $result = $conn->query($sql);
 
 $users = array();

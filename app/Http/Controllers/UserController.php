@@ -19,7 +19,6 @@ class UserController extends Controller {
 
     public function getUsers(){
         $users = DB::connection('mysql')->select("SELECT * FROM users");
-
         return response()->json($users, 200);
     }
 
@@ -30,12 +29,7 @@ class UserController extends Controller {
     }
 
     public function show($id) {
-        $user = User::find($id);
-
-        if (!$user) {
-            return $this->errorResponse('User not found', Response::HTTP_NOT_FOUND);
-        }
-
+        $user = User::findOrFail($id);
         return $this->successResponse($user);
     }
 
@@ -46,15 +40,36 @@ class UserController extends Controller {
             'gender' => 'required|in:Male,Female',
         ];
     
-        // ✅ Lumen-compatible validation
-        $validator = app('validator')->make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return $this->errorResponse($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $this->validate($request, $rules);
     
         $user = User::create($request->all());
-
         return $this->successResponse($user, Response::HTTP_CREATED);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $rules = [
+            'username' => 'max:20',
+            'password' => 'max:20',
+            'gender' => 'in:Male,Female',
+        ];
+
+        $this->validate($request, $rules);
+        $user = User::findOrFail($id);
+        $user->fill($request->all());
+
+        if ($user->isClean()) {
+            return $this->errorResponse('At least one value must change', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user->save();
+        return $this->successResponse($user);
+    }
+
+    public function delete($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+        return $this->errorResponse('User ID Does Not Exists', Response::HTTP_NOT_FOUND);
     }
 }

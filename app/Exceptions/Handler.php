@@ -17,7 +17,6 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     use ApiResponser;
-    
     /**
      * A list of the exception types that should not be reported.
      *

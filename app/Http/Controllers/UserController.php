@@ -57,4 +57,12 @@ class UserController extends Controller {
 
         return $this->successResponse($user, Response::HTTP_CREATED);
     }
+    public function delete($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+        
+        return $this->successResponse($user);
+    }
+
 }

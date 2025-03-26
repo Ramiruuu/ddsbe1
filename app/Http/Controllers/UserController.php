@@ -2,67 +2,101 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User; 
-use App\Traits\ApiResponser; 
+use App\Models\User;
+use Illuminate\Http\Response;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response; 
-use Illuminate\Support\Facades\DB;
+use DB;
 
-class UserController extends Controller {
-    use ApiResponser;
-
+class UserController extends Controller
+{
     private $request;
 
     public function __construct(Request $request){
         $this->request = $request;
     }
 
-    public function getUsers(){
-        $users = DB::connection('mysql')->select("SELECT * FROM users");
-
-        return response()->json($users, 200);
+    /* Helper method to return a successful JSON response */
+    protected function successResponse($data, $code = Response::HTTP_OK){
+        return response()->json(['data' => $data], $code);
     }
 
-    public function index()
-    {
+    /* Helper method to return an error JSON response */
+    protected function errorResponse($message, $code){
+        return response()->json(['error' => $message, 'code' => $code], $code);
+    }
+
+    /* Return the list of users */
+    public function index(){
         $users = User::all();
         return $this->successResponse($users);
     }
 
-    public function show($id) {
-        $user = User::find($id);
-
-        if (!$user) {
-            return $this->errorResponse('User not found', Response::HTTP_NOT_FOUND);
-        }
-
-        return $this->successResponse($user);
+    /* Get all users */
+    public function getUsers(){
+        $users = User::all();
+        return $this->successResponse($users);
     }
 
-    public function add(Request $request) {
+    /*Add a new user*/
+    public function add(Request $request){
         $rules = [
             'username' => 'required|max:20',
             'password' => 'required|max:20',
-            'gender' => 'required|in:Male,Female',
+            'gender' => 'required|in:Male,Female,Other',
         ];
-    
-        // ✅ Lumen-compatible validation
-        $validator = app('validator')->make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return $this->errorResponse($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-    
+        
+        $this->validate($request, $rules);
         $user = User::create($request->all());
-
         return $this->successResponse($user, Response::HTTP_CREATED);
     }
-    public function delete($id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-        
+
+    /*Show details of a single user*/
+    public function show($id){
+        $user = User::find($id);
+
+        if (!$user) {
+            return $this->errorResponse('User ID does not exist', Response::HTTP_NOT_FOUND);
+        }
+
         return $this->successResponse($user);
     }
 
+    /*Update an existing user*/
+    public function update(Request $request, $id){
+        $rules = [
+            'username' => 'max:20',
+            'password' => 'max:20',
+            'gender' => 'in:Male,Female,Other',
+        ];
+
+        $this->validate($request, $rules);
+        $user = User::find($id);
+
+        if (!$user) {
+            return $this->errorResponse('User ID does not exist', Response::HTTP_NOT_FOUND);
+        }
+
+        $user->fill($request->all());
+
+        if ($user->isClean()) {
+            return $this->errorResponse('At least one value must change', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user->save();
+        return $this->successResponse($user);
+    }
+
+    /* Delete a user */
+    public function delete($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return $this->errorResponse('User ID does not exist', Response::HTTP_NOT_FOUND);
+        }
+
+        $user->delete();
+        return $this->successResponse(['message' => 'User deleted successfully']);
+    }
 }

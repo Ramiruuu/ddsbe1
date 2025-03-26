@@ -23,7 +23,6 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// uncomment done
 $app->withFacades();
 $app->withEloquent();
 

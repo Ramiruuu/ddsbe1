@@ -2,21 +2,16 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
-{
-    protected $table = 'users'; 
+    class User extends Model{
+        protected $table = 'tbluser1';
+        // column sa table
+        protected $fillable = ['username', 'password','gender'];
 
-    protected $primaryKey = 'id';
+        public $timestamps = false;
+        //protected $primaryKey = 'id';
 
-    public $timestamps = false; 
-    public $incrementing = true; 
-    protected $keyType = 'int';  
-
-    protected $fillable = [
-        'username', 
-        'password', 
-        'gender'
-    ];
-}
+        protected $hidden = ['password',];
+ }

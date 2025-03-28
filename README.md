@@ -16,12 +16,8 @@ This project is a **microservice** built with **Lumen**, designed for fast and e
 - **Composer**
 - **Laravel/Lumen Installer**
 
----
-
 ## Installation
 
 ### 1. Clone the repository
 ```sh
-git clone https://github.com/Ramiruuu/it2r5act4
-
-cd <working folder>
+git clone https://github.com/Ramiruuu/ddsbe1

@@ -37,5 +37,5 @@ $router->group([], function () use ($router) {
 });
 
 // UserJob Routes
-$router->get('/userjobs', 'UserJobController@index'); // Get all user jobs
-$router->get('/userjobs/{id}', 'UserJobController@show'); // Get user job by ID
+$router->get('/userjob', 'UserJobController@index'); // Get all user jobs
+$router->get('/userjob/{id}', 'UserJobController@show'); // Get user job by ID

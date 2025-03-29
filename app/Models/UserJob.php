@@ -7,10 +7,10 @@ class UserJob extends Model
 {
     protected $table = 'tbluserjob';
     protected $primaryKey = 'jobid';
-
+    
     protected $fillable = [
         'jobid', 'jobname',
     ];
-
+    
     public $timestamps = false;
 }
